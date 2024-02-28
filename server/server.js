@@ -31,7 +31,6 @@ app.get('/api/produtos', async (req, res) => {
 
 // Route to create a new product
 app.post('/api/produtos', async (req, res) => {
-    console.log(req.body.nome);
 
     const {codigo, nome, preco, estoque } = req.body;
     try {
