@@ -31,9 +31,11 @@ app.get('/api/produtos', async (req, res) => {
 
 // Route to create a new product
 app.post('/api/produtos', async (req, res) => {
-    const { nome, preco, estoque } = req.body;
+    console.log(req.body.nome);
+
+    const {codigo, nome, preco, estoque } = req.body;
     try {
-        const [result] = await pool.query('INSERT INTO produto (nome, preco, estoque) VALUES (?, ?, ?)', [nome, preco, estoque]);
+        const [result] = await pool.query('INSERT INTO produto (codigo, nome, preco, estoque) VALUES (?, ?, ?, ?)', [codigo, nome, preco, estoque]);
         res.json({ message: 'Produto criado com sucesso', id: result.insertId });
     } catch (err) {
         console.error(err);
