@@ -30,10 +30,9 @@ app.get('/api/produtos', async (req, res) => {
 });
 
 // Route to create a new product
-app.post('/api/produtos', async (req, res) => {
-    console.log(req.body.nome);
+app.post('/api/produtos/:codigo/:nome/:preco/:estoque', async (req, res) => {
 
-    const {codigo, nome, preco, estoque } = req.body;
+    const {codigo, nome, preco, estoque } = req.params;
     try {
         const [result] = await pool.query('INSERT INTO produto (codigo, nome, preco, estoque) VALUES (?, ?, ?, ?)', [codigo, nome, preco, estoque]);
         res.json({ message: 'Produto criado com sucesso', id: result.insertId });
@@ -60,9 +59,12 @@ app.get('/api/produtos/:codigo', async (req, res) => {
 });
 
 // Route to update a product
-app.put('/api/produtos/:codigo', async (req, res) => {
-    const codigo = req.params.codigo;
-    const { nome, preco, estoque } = req.body;
+app.put('/api/produtos/:codigo/:nome/:preco/:estoque', async (req, res) => {
+    //const codigo = req.params.codigo;
+    //const codigo = req.params.codigo;
+    const { codigo ,nome, preco, estoque } = req.params;
+    console.log( req.params)
+
     try {
         await pool.query('UPDATE produto SET nome = ?, preco = ?, estoque = ? WHERE codigo = ?', [nome, preco, estoque, codigo]);
         res.json({ message: 'Produto editado com sucesso' });

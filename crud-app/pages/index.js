@@ -6,7 +6,6 @@ const ProductsPage = () => {
   const [newProductPrice, setNewProductPrice] = useState('');
   const [newProductStock, setNewProductStock] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [inputValue, setInputValue] = useState('');
 
 
   useEffect(() => {
@@ -48,7 +47,7 @@ const ProductsPage = () => {
     console.log(JSON.stringify(newProduct));
 
     try {
-      const response = await fetch('http://localhost:8080/api/produtos', {
+      const response = await fetch(`http://localhost:8080/api/produtos/${newProduct.codigo}/${newProduct.nome}/${newProduct.preco}/${newProduct.estoque}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProduct)
@@ -68,19 +67,27 @@ const ProductsPage = () => {
     }
   };
 
+  const handleUpdateProduct = async (e) => {
+    e.preventDefault();
 
-  const handleUpdateProduct = async () => {
     if (!selectedProduct) {
       return;
     }
 
-    const { codigo, ...updatedProduct } = selectedProduct;
+    const updatedProduct = {
+      codigo: selectedProduct.codigo,
+      nome: newProductName,
+      preco: parseFloat(newProductPrice),
+      estoque: parseInt(newProductStock),
+    };
+
+    //const { codigo, ...updatedProduct } = selectedProduct;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/produtos/${codigo}`, {
+      const response = await fetch(`http://localhost:8080/api/produtos/${updatedProduct.codigo}/${updatedProduct.nome}/${updatedProduct.preco}/${updatedProduct.estoque}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedProduct)
+        //body: JSON.stringify(updatedProduct)
       });
 
       if (!response.ok) {
@@ -154,98 +161,6 @@ const ProductsPage = () => {
   }
 
   return (
-    // <div className="products-container">
-    //     <h1>Products</h1>
-
-    //     {/* Display existing products */}
-    //     <ul className="products-list">
-    //         {products.map((product) => (
-    //             <li key={product.codigo} className="product-item">
-    //                 <div>
-    //                     <h3>{product.nome}</h3>
-    //                     <p>Price: R$ {product.preco.toFixed(2)}</p>
-    //                     <p>Stock: {product.estoque}</p>
-    //                 </div>
-    //                 <div className="product-actions">
-    //                     <button onClick={() => handleGetProduct(product.codigo)}>Edit</button>
-    //                     <button onClick={() => handleDeleteProduct(product.codigo)}>Delete</button>
-    //                 </div>
-    //             </li>
-    //         ))}
-    //     </ul>
-
-    //     {/* Create new product form */}
-    //     <h2>Create New Product</h2>
-    //     <form onSubmit={handleNewProductSubmit}>
-    //         <label htmlFor="name">Name:</label>
-    //         <input
-    //             type="text"
-    //             id="name"
-    //             value={newProductName}
-    //             onChange={(e) => setNewProductName(e.target.value)}
-    //             required
-    //         />
-    //         <label htmlFor="price">Price:</label>
-    //         <input
-    //             type="number"
-    //             id="price"
-    //             value={newProductPrice}
-    //             onChange={(e) => setNewProductPrice(e.target.value)}
-    //             required
-    //         />
-    //         <label htmlFor="stock">Stock:</label>
-    //         <input
-    //             type="number"
-    //             id="stock"
-    //             value={newProductStock}
-    //             onChange={(e) => setNewProductStock(e.target.value)}
-    //             required
-    //         />
-    //         <button type="submit">Create Product</button>
-    //     </form>
-
-    //     {/* Edit product form (conditionally rendered) */}
-    //     {selectedProduct && (
-    //         <>
-    //             <h2>Edit Product</h2>
-    //             <form onSubmit={handleUpdateProduct}>
-    //                 <label htmlFor="edit-name">Name:</label>
-    //                 <input
-    //                     type="text"
-    //                     id="edit-name"
-    //                     value={selectedProduct.nome}
-    //                     onChange={(e) => {
-    //                         setSelectedProduct({ ...selectedProduct, nome: e.target.value });
-    //                     }}
-    //                     required
-    //                 />
-    //                 <label htmlFor="edit-price">Price:</label>
-    //                 <input
-    //                     type="number"
-    //                     id="edit-price"
-    //                     value={selectedProduct.preco}
-    //                     onChange={(e) => {
-    //                         setSelectedProduct({ ...selectedProduct, preco: parseFloat(e.target.value) });
-    //                     }}
-    //                     required
-    //                 />
-    //                 <label htmlFor="edit-stock">Stock:</label>
-    //                 <input
-    //                     type="number"
-    //                     id="edit-stock"
-    //                     value={selectedProduct.estoque}
-    //                     onChange={(e) => {
-    //                         setSelectedProduct({ ...selectedProduct, estoque: parseInt(e.target.value) });
-    //                     }}
-    //                     required
-    //                 />
-    //                 <button type="submit">Update Product</button>
-    //             </form>
-    //             <button onClick={() => setSelectedProduct(null)}>Cancel Edit</button>
-    //         </>
-    //     )}
-    // </div>
-
     <main className="body">
       <div className="container">
         <div className="header">
