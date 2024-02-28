@@ -6,6 +6,7 @@ const ProductsPage = () => {
     const [newProductPrice, setNewProductPrice] = useState('');
     const [newProductStock, setNewProductStock] = useState('');
     const [selectedProduct, setSelectedProduct] = useState(null);
+    //const [openModal, setOpenModal] = useState();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -13,6 +14,7 @@ const ProductsPage = () => {
                 const response = await fetch('http://localhost:8080/api/produtos');
                 const data = await response.json();
                 setProducts(data);
+                console.log(data)
             } catch (error) {
                 console.error(error);
                 
@@ -52,9 +54,9 @@ const ProductsPage = () => {
         }
     };
 
-    const handleGetProduct = async (coding) => {
+    const handleGetProduct = async (codigo) => {
         try {
-            const response = await fetch(`/api/produtos/${coding}`);
+            const response = await fetch(`http://localhost:8080/api/produtos/${codigo}`);
             const data = await response.json();
             setSelectedProduct(data);
         } catch (error) {
@@ -68,10 +70,10 @@ const ProductsPage = () => {
             return; 
         }
 
-        const { coding, ...updatedProduct } = selectedProduct;
+        const { codigo, ...updatedProduct } = selectedProduct;
 
         try {
-            const response = await fetch(`/api/produtos/${coding}`, {
+            const response = await fetch(`http://localhost:8080/api/produtos/${codigo}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedProduct)
@@ -82,7 +84,7 @@ const ProductsPage = () => {
             }
 
             const updatedProducts = products.map(product => (
-                product.coding === coding ? { ...product, ...updatedProduct } : product
+                product.codigo === codigo ? { ...product, ...updatedProduct } : product
             ));
             setProducts(updatedProducts);
             setSelectedProduct(null); // 
@@ -92,9 +94,10 @@ const ProductsPage = () => {
         }
     };
 
-    const handleDeleteProduct = async (coding) => {
+    const handleDeleteProduct = async (codigo) => {
         try {
-            const response = await fetch(`/api/produtos/${coding}`, {
+            console.log(codigo)
+            const response = await fetch(`http://localhost:8080/api/produtos/${codigo}`, {
                 method: 'DELETE',
             });
 
@@ -102,7 +105,7 @@ const ProductsPage = () => {
                 throw new Error(`Error deleting product: ${await response.text()}`);
             }
 
-            const updatedProducts = products.filter(product => product.coding !== coding);
+            const updatedProducts = products.filter(product => product.codigo !== codigo);
             setProducts(updatedProducts);
         } catch (error) {
             console.error(error);
@@ -143,15 +146,15 @@ const ProductsPage = () => {
         //     {/* Display existing products */}
         //     <ul className="products-list">
         //         {products.map((product) => (
-        //             <li key={product.coding} className="product-item">
+        //             <li key={product.codigo} className="product-item">
         //                 <div>
         //                     <h3>{product.nome}</h3>
         //                     <p>Price: R$ {product.preco.toFixed(2)}</p>
         //                     <p>Stock: {product.estoque}</p>
         //                 </div>
         //                 <div className="product-actions">
-        //                     <button onClick={() => handleGetProduct(product.coding)}>Edit</button>
-        //                     <button onClick={() => handleDeleteProduct(product.coding)}>Delete</button>
+        //                     <button onClick={() => handleGetProduct(product.codigo)}>Edit</button>
+        //                     <button onClick={() => handleDeleteProduct(product.codigo)}>Delete</button>
         //                 </div>
         //             </li>
         //         ))}
@@ -246,6 +249,17 @@ const ProductsPage = () => {
                             <th className="acao">Editar</th>
                             <th className="acao">Excluir</th>
                             </tr>
+                            {products?<>
+                            {products.map((prd)=>(
+                              <tr key={prd.key}>
+                                <td>{prd.nome}</td>
+                                <td>{prd.preco}</td>
+                                <td>{prd.estoque}</td>
+                                <td><button onClick={()=> {setSelectedProduct(prd); openModal(true)}}>Editar</button></td>
+                                <td><button onClick={() => {handleDeleteProduct(prd.codigo)}}>Excluir</button></td>
+                              </tr>
+                            ))}
+                            </> :<></>}
                         </thead>
                         <tbody>
                         </tbody>

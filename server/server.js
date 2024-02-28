@@ -69,3 +69,14 @@ app.put('/api/produtos/:codigo', async (req, res) => {
         res.status(500).json({ message: 'Erro ao editar produto' });
     }
 });
+
+app.delete('/api/produtos/:codigo', async (req, res)=>{
+    const codigo = req.params.codigo;
+    try{
+        await pool.query(`DELETE FROM produto WHERE codigo = ${codigo};`)
+        res.json({message:'Produto deletado'});
+    }catch{
+        console.error(err);
+        res.status(500).json({ message: 'Erro ao deletar produto' });
+    }
+})
