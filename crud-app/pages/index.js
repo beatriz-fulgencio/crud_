@@ -6,7 +6,6 @@ const ProductsPage = () => {
   const [newProductPrice, setNewProductPrice] = useState('');
   const [newProductStock, setNewProductStock] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [inputValue, setInputValue] = useState('');
 
 
   useEffect(() => {
@@ -48,7 +47,7 @@ const ProductsPage = () => {
     console.log(JSON.stringify(newProduct));
 
     try {
-      const response = await fetch('http://localhost:8080/api/produtos', {
+      const response = await fetch(`http://localhost:8080/api/produtos/${newProduct.codigo}/${newProduct.nome}/${newProduct.preco}/${newProduct.estoque}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProduct)
@@ -68,8 +67,8 @@ const ProductsPage = () => {
     }
   };
 
-
-  const handleUpdateProduct = async () => {
+  const handleUpdateProduct = async (e) => {
+    e.preventDefault();
 
     if (!selectedProduct) {
       return;
@@ -85,10 +84,10 @@ const ProductsPage = () => {
     //const { codigo, ...updatedProduct } = selectedProduct;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/produtos/${selectedProduct.codigo}`, {
+      const response = await fetch(`http://localhost:8080/api/produtos/${updatedProduct.codigo}/${updatedProduct.nome}/${updatedProduct.preco}/${updatedProduct.estoque}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedProduct)
+        //body: JSON.stringify(updatedProduct)
       });
 
       if (!response.ok) {
