@@ -1,7 +1,109 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [products, setProducts] = useState([]);
+  const [newProductName, setNewProductName] = useState('');
+  const [newProductPrice, setNewProductPrice] = useState('');
+  const [newProductStock, setNewProductStock] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/produtos").then(
+      res => {
+        setProducts(res);
+      }
+    );
+  }, []);
+
+  const handleNewProductSubmit = async (e) => {
+    e.preventDefault();
+
+    const newProduct = {
+      nome: newProductName,
+      preco: parseFloat(newProductPrice),
+      estoque: parseInt(newProductStock),
+    };
+
+    try {
+      const response = await fetch('/api/produtos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao criar produto: ${await response.text()}`);
+      }
+
+      setProducts([...products, newProduct]);
+      //clean older values
+      setNewProductName('');
+      setNewProductPrice('');
+      setNewProductStock('');
+    } catch (error) {
+      console.error(error);
+
+    }
+  };
+
+  const handleGetProduct = async (codigo) => {
+    try {
+      const response = await fetch(`/api/produtos/${codigo}`);
+      const data = await response.json();
+      setSelectedProduct(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUpdateProduct = async () => {
+    if (!selectedProduct) {
+      //if nothing is selected you cant update
+      return;
+    }
+
+    const { codigo, ...updatedProduct } = selectedProduct;
+
+    try {
+      const response = await fetch(`/api/produtos/${codigo}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProduct)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao atualizar: ${await response.text()}`);
+      }
+
+      const updatedProducts = products.map(product => (
+        product.codigo === codigo ? { ...product, ...updatedProduct } : product
+      ));
+      setProducts(updatedProducts);
+      setSelectedProduct(null); // Clear selected product after update
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteProduct = async (codigo) => {
+    try {
+      const response = await fetch(`/api/produtos/${codigo}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error deleting product: ${await response.text()}`);
+      }
+
+      const updatedProducts = products.filter(product => product.codigo !== codigo);
+      setProducts(updatedProducts);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <main className={styles.main}>
       <div className={styles.description}>
