@@ -27,13 +27,13 @@ npm install mysql2 express cors
      ```
 
 2. **Servidor Frontend**:
-   - Em outro terminal, vá para o diretório do frontend (geralmente `client`) e execute o comando:
+   - Em outro terminal, vá para o diretório do frontend (no caso `crud-app`) e execute o comando:
      ```bash
      npm run dev
      ```
 
 3. **Acesso ao Aplicativo**:
-   - Acesse o aplicativo em um navegador da web através do endereço `http://localhost:{porta}`, onde `{porta}` é a porta especificada durante a execução do servidor.
+   - Acesse o aplicativo em um navegador da web através do endereço `http://localhost:{porta}`, onde `{porta}` é a porta especificada durante a execução do servidor, geralmente 3000
 
 Observe que o terminal informará em qual porta o servidor está ouvindo.
 
